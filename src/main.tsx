@@ -12,6 +12,7 @@ createServer({
           id: 1,
           title: 'Desenvolvimento de web site',
           amount: 12000,
+          type: 'deposit',
           category: 'Desenvolvimento',
           created_at: new Date()
         },
