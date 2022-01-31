@@ -1,5 +1,8 @@
 import { FormEvent, useState } from "react";
 import Modal from "react-modal";
+
+import { api } from "../../services/api";
+
 import closeImg from "../../assets/fechar.svg";
 import incomeImg from "../../assets/entradas.svg";
 import outcomeImg from "../../assets/saidas.svg";
@@ -36,6 +39,8 @@ export function NewTransactionModal({ isOpen, onRequestClose }: ModalProps) {
 
   function handleCreateNewTransaction(event: FormEvent) {
     event.preventDefault();
+
+    api.post("/transactions", formValues);
   }
 
   return (
@@ -84,7 +89,7 @@ export function NewTransactionModal({ isOpen, onRequestClose }: ModalProps) {
 
           <TypeButton
             type="button"
-            onClick={() => setFormValues({ ...formValues, type: "withdraw}" })}
+            onClick={() => setFormValues({ ...formValues, type: "withdraw" })}
             isActive={type === "withdraw"}
             activeColor="#E62E4D"
           >
