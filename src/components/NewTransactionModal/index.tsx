@@ -1,10 +1,10 @@
+import { FormEvent, useState } from "react";
 import Modal from "react-modal";
 import closeImg from "../../assets/fechar.svg";
 import incomeImg from "../../assets/entradas.svg";
 import outcomeImg from "../../assets/saidas.svg";
 
 import { Container, TransactionTypeContainer, TypeButton } from "./styles";
-import { useState } from "react";
 
 Modal.setAppElement("#root");
 
@@ -13,8 +13,30 @@ interface ModalProps {
   onRequestClose: () => void;
 }
 
+interface FormValuesProps {
+  title: string;
+  value: number;
+  category: string;
+  type: string;
+}
+
 export function NewTransactionModal({ isOpen, onRequestClose }: ModalProps) {
-  const [type, setType] = useState("deposit");
+  const [formValues, setFormValues] = useState<FormValuesProps>({
+    title: "",
+    value: 0,
+    category: "",
+    type: "",
+  } as FormValuesProps);
+  const { title, value, category, type } = formValues;
+
+  function handleChange(event: FormEvent) {
+    const { value, name } = event.target as HTMLInputElement;
+    setFormValues({ ...formValues, [name]: value });
+  }
+
+  function handleCreateNewTransaction(event: FormEvent) {
+    event.preventDefault();
+  }
 
   return (
     <Modal
@@ -30,17 +52,29 @@ export function NewTransactionModal({ isOpen, onRequestClose }: ModalProps) {
       >
         <img src={closeImg} alt="fechar modal" />
       </button>
-      <Container>
+      <Container onSubmit={handleCreateNewTransaction}>
         <h2>Cadastrar nova transação</h2>
 
-        <input placeholder="Título" type="text" />
+        <input
+          name="title"
+          value={title}
+          onChange={handleChange}
+          placeholder="Título"
+          type="text"
+        />
 
-        <input placeholder="Valor" type="number" />
+        <input
+          name="value"
+          value={value}
+          onChange={handleChange}
+          placeholder="Valor"
+          type="number"
+        />
 
         <TransactionTypeContainer>
           <TypeButton
             type="button"
-            onClick={() => setType("deposit")}
+            onClick={() => setFormValues({ ...formValues, type: "deposit" })}
             isActive={type === "deposit"}
             activeColor="#33CC95"
           >
@@ -50,17 +84,22 @@ export function NewTransactionModal({ isOpen, onRequestClose }: ModalProps) {
 
           <TypeButton
             type="button"
-            onClick={() => setType("withdraw")}
+            onClick={() => setFormValues({ ...formValues, type: "withdraw}" })}
             isActive={type === "withdraw"}
             activeColor="#E62E4D"
-
           >
             <img src={outcomeImg} alt="saída" />
             <span>Saída</span>
           </TypeButton>
         </TransactionTypeContainer>
 
-        <input placeholder="Categoria" type="text" />
+        <input
+          name="category"
+          value={category}
+          onChange={handleChange}
+          placeholder="Categoria"
+          type="text"
+        />
 
         <button type="submit">Cadastrar</button>
       </Container>
