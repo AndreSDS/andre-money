@@ -23,7 +23,7 @@ export function NewTransactionModal({ isOpen, onRequestClose }: ModalProps) {
     title: "",
     amount: 0,
     category: "",
-    type: "",
+    type: "deposit",
   } as TransactionInput);
   const { title, amount, category, type } = formValues;
 
@@ -32,10 +32,18 @@ export function NewTransactionModal({ isOpen, onRequestClose }: ModalProps) {
     setFormValues({ ...formValues, [name]: value });
   }
 
-  function handleCreateNewTransaction(event: FormEvent) {
+  async function handleCreateNewTransaction(event: FormEvent) {
     event.preventDefault();
 
-    createTransaction(formValues);
+    await createTransaction(formValues);
+
+    setFormValues({
+      title: "",
+      amount: 0,
+      category: "",
+      type: "deposit",
+    });
+    onRequestClose();
   }
 
   return (

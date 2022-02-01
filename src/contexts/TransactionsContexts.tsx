@@ -8,16 +8,27 @@ interface TransactionsProviderProps {
 
 interface TransactionsContextProps {
   transactions: TransactionProps[];
-  createTransaction: (transaction: TransactionInput) => void;
+  createTransaction: (transaction: TransactionInput) => Promise<void>;
 }
 
-export const TransactionsContext = createContext<TransactionsContextProps>({} as TransactionsContextProps);
+export const TransactionsContext = createContext<TransactionsContextProps>(
+  {} as TransactionsContextProps
+);
 
 export function TransactionsProvider({ children }: TransactionsProviderProps) {
   const [transactions, setTransactions] = useState<TransactionProps[]>([]);
 
-  async function createTransaction(transaction: TransactionInput) {
-    await api.post("/transactions", transaction);
+  async function createTransaction(transactionInput: TransactionInput) {
+    const response = await api.post("/transactions", transactionInput);
+    const { transaction } = response.data;
+
+    const formattedTransaction: TransactionProps = {
+      ...transaction,
+      amount: formatCurrency(transaction.amount),
+      createdAt: formatDate(transaction.createdAt),
+    };
+
+    setTransactions([...transactions, formattedTransaction]);
   }
 
   function formatCurrency(amount: number) {
@@ -33,18 +44,19 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
 
   useEffect(() => {
     api.get("transactions").then((response) => {
-      const formattedTransactions: TransactionProps[] =
-        response.data.transactions.map((transaction: TransactionProps) => ({
+      const formattedTrasactions = response.data.transactions.map(
+        (transaction: TransactionProps) => ({
           ...transaction,
           amount: formatCurrency(transaction.amount),
           createdAt: formatDate(transaction.createdAt),
-        }));
-      setTransactions(formattedTransactions);
+        })
+      );
+      setTransactions(formattedTrasactions);
     });
   }, []);
 
   return (
-    <TransactionsContext.Provider value={{transactions, createTransaction}}>
+    <TransactionsContext.Provider value={{ transactions, createTransaction }}>
       {children}
     </TransactionsContext.Provider>
   );
