@@ -29,11 +29,21 @@ export function NewTransactionModal({ isOpen, onRequestClose }: ModalProps) {
 
   function handleChange(event: FormEvent) {
     const { value, name } = event.target as HTMLInputElement;
-    setFormValues({ ...formValues, [name]: value });
+
+    const valueAsNumber = name === "amount" ? Number(value) : value;
+
+    setFormValues({ ...formValues, [name]: valueAsNumber });
   }
 
   async function handleCreateNewTransaction(event: FormEvent) {
     event.preventDefault();
+
+    // for (const fieldName in formValues) {
+    //   if (formValues[fieldName] === "") {
+    //     alert(`Preencha todos os campos!`);
+    //     return;
+    //   }
+    // }
 
     await createTransaction(formValues);
 

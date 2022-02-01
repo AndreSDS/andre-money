@@ -1,4 +1,10 @@
-import React, { createContext, useEffect, useState, ReactNode, useContext } from "react";
+import React, {
+  createContext,
+  useEffect,
+  useState,
+  ReactNode,
+  useContext,
+} from "react";
 import { api } from "../services/api";
 import { TransactionProps, TransactionInput } from "../interfaces";
 
@@ -22,37 +28,12 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
     const response = await api.post("/transactions", transactionInput);
     const { transaction } = response.data;
 
-    const formattedTransaction: TransactionProps = {
-      ...transaction,
-      amount: formatCurrency(transaction.amount),
-      createdAt: formatDate(transaction.createdAt),
-    };
-
-    setTransactions([...transactions, formattedTransaction]);
-  }
-
-  function formatCurrency(amount: number) {
-    return new Intl.NumberFormat("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    }).format(amount);
-  }
-
-  function formatDate(date: string) {
-    return new Intl.DateTimeFormat("pt-BR").format(new Date(date));
+    setTransactions([...transactions, transaction]);
   }
 
   useEffect(() => {
     api.get("transactions").then((response) => {
-      const formattedTrasactions = response.data.transactions.map(
-        (transaction: TransactionProps) => ({
-          ...transaction,
-          amount: formatCurrency(transaction.amount),
-          createdAt: formatDate(transaction.createdAt),
-        })
-      );
-
-      setTransactions(formattedTrasactions);
+      setTransactions(response.data.transactions);
     });
   }, []);
 
@@ -63,7 +44,7 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
   );
 }
 
-export function useTransactions () {
+export function useTransactions() {
   const context = useContext(TransactionsContext);
 
   return context;

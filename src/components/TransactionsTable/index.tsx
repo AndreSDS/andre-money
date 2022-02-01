@@ -1,9 +1,10 @@
 import { useTransactions } from "../../hooks/useTransactions";
+import { formatCurrency, formatDate } from "../../utils";
 import { TransactionProps } from "../../interfaces";
 import { Container } from "./styles";
 
 export function TransactionsTable() {
-  const {transactions} = useTransactions();
+  const { transactions } = useTransactions();
 
   return (
     <Container>
@@ -29,9 +30,9 @@ export function TransactionsTable() {
             }: TransactionProps) => (
               <tr key={id}>
                 <td>{title}</td>
-                <td className={type}>{amount}</td>
+                <td className={type}>{formatCurrency(amount)}</td>
                 <td>{category}</td>
-                <td>{createdAt}</td>
+                <td>{formatDate(createdAt)}</td>
               </tr>
             )
           )}
