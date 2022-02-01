@@ -16,11 +16,22 @@ interface TransactionProps {
 export function TransactionsTable() {
   const [transactions, setTransactions] = useState<TransactionProps[]>([]);
 
-  useEffect(() => {
-    api.get("transactions").then((response) => setTransactions(response.data.transactions));
-  }, []);
+  function formatCurrency(amount: number) {
+    return new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    }).format(amount);
+  }
 
-  console.log(transactions);
+  function formatDate(date: string) {
+    return new Intl.DateTimeFormat("pt-BR").format(new Date(date));
+  }
+
+  useEffect(() => {
+    api
+      .get("transactions")
+      .then((response) => setTransactions(response.data.transactions));
+  }, []);
 
   return (
     <Container>
@@ -35,14 +46,23 @@ export function TransactionsTable() {
         </thead>
 
         <tbody>
-          {transactions.map((transaction) => (
-            <tr key={transaction.id}>
-              <td>{transaction.title}</td>
-              <td className={transaction.type}>R$ {transaction.amount}</td>
-              <td>{transaction.category}</td>
-              <td>{transaction.createdAt}</td>
-            </tr>
-          ))}
+          {transactions.map(
+            ({
+              id,
+              title,
+              type,
+              amount,
+              category,
+              createdAt,
+            }: TransactionProps) => (
+              <tr key={id}>
+                <td>{title}</td>
+                <td className={type}>{formatCurrency(amount)}</td>
+                <td>{category}</td>
+                <td>{formatDate(createdAt)}</td>
+              </tr>
+            )
+          )}
         </tbody>
       </table>
     </Container>
