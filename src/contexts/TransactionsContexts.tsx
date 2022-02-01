@@ -1,15 +1,24 @@
 import React, { createContext, useEffect, useState, ReactNode } from "react";
 import { api } from "../services/api";
-import { TransactionProps } from "../interfaces";
-
-export const TransactionsContext = createContext<TransactionProps[]>([]);
+import { TransactionProps, TransactionInput } from "../interfaces";
 
 interface TransactionsProviderProps {
   children: ReactNode;
 }
 
+interface TransactionsContextProps {
+  transactions: TransactionProps[];
+  createTransaction: (transaction: TransactionInput) => void;
+}
+
+export const TransactionsContext = createContext<TransactionsContextProps>({} as TransactionsContextProps);
+
 export function TransactionsProvider({ children }: TransactionsProviderProps) {
   const [transactions, setTransactions] = useState<TransactionProps[]>([]);
+
+  async function createTransaction(transaction: TransactionInput) {
+    await api.post("/transactions", transaction);
+  }
 
   function formatCurrency(amount: number) {
     return new Intl.NumberFormat("pt-BR", {
@@ -35,7 +44,7 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
   }, []);
 
   return (
-    <TransactionsContext.Provider value={transactions}>
+    <TransactionsContext.Provider value={{transactions, createTransaction}}>
       {children}
     </TransactionsContext.Provider>
   );

@@ -6,3 +6,5 @@ export interface TransactionProps {
   amount: number;
   createdAt: string;
 }
+
+export type TransactionInput = Omit<TransactionProps, "id" | "createdAt">;
