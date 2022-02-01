@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 
 import { api } from "../../services/api";
+import { TransactionsContext } from "../../contexts/TransactionsContexts";
 
 import { Container } from "./styles";
 
@@ -14,6 +15,7 @@ interface TransactionProps {
 }
 
 export function TransactionsTable() {
+  const data = useContext(TransactionsContext);
   const [transactions, setTransactions] = useState<TransactionProps[]>([]);
 
   function formatCurrency(amount: number) {
