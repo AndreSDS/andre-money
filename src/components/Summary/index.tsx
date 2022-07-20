@@ -5,11 +5,12 @@ import outcomeImg from "../../assets/saidas.svg";
 import totalImg from "../../assets/total.svg";
 
 import { Container } from "./styles";
+import { useEffect } from "react";
 
 export function Summary() {
-  const { transactions } = useTransactions();
+  const { transactions, getAllTransactions } = useTransactions();
 
-  const summary = transactions.reduce(
+  const summary = transactions?.reduce(
     (accumulator, transaction) => {
       if (transaction.type === "deposit") {
         accumulator.deposit += transaction.amount;
@@ -27,6 +28,10 @@ export function Summary() {
       total: 0,
     }
   );
+
+  useEffect(() => {
+    getAllTransactions();
+  }, []);
 
   return (
     <Container>

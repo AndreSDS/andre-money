@@ -19,6 +19,7 @@ interface ModalProps {
 
 export function NewTransactionModal({ isOpen, onRequestClose }: ModalProps) {
   const { createTransaction } = useTransactions();
+
   const [formValues, setFormValues] = useState<TransactionInput>({
     title: "",
     amount: 0,
