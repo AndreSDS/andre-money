@@ -15,7 +15,7 @@ export function createMockServer() {
             type: "deposit",
             category: "Desenvolvimento",
             amount: 12000,
-            createdAt: new Date("2021-02-14 09:00:00"),
+            createdAt: new Date("2021-07-14 09:00:00"),
           },
           {
             id: 2,
@@ -23,7 +23,7 @@ export function createMockServer() {
             type: "withdraw",
             category: "Casa",
             amount: 1000,
-            createdAt: new Date("2021-02-20 09:00:00"),
+            createdAt: new Date("2021-07-20 09:00:00"),
           },
         ],
       });

@@ -1,16 +1,25 @@
+import { useEffect, useState } from "react";
 import { useTransactions } from "../../hooks/useTransactions";
-import { formatCurrency } from "../../utils";
+import {
+  filterListByMonth,
+  formatCurrency,
+  getCurrentMonth,
+} from "../../utils";
 import incomeImg from "../../assets/entradas.svg";
 import outcomeImg from "../../assets/saidas.svg";
 import totalImg from "../../assets/total.svg";
 
 import { Container } from "./styles";
-import { useEffect } from "react";
+import { TransactionProps } from "../../interfaces";
 
 export function Summary() {
   const { transactions, getAllTransactions } = useTransactions();
 
-  const summary = transactions?.reduce(
+  const [transactionsFiltred, setTransactionsFiltred] =
+    useState<TransactionProps[]>(transactions);
+  const [currentMonth, setCurrentMonth] = useState(getCurrentMonth());
+
+  const summary = transactionsFiltred?.reduce(
     (accumulator, transaction) => {
       if (transaction.type === "deposit") {
         accumulator.deposit += transaction.amount;
@@ -28,6 +37,14 @@ export function Summary() {
       total: 0,
     }
   );
+
+  useEffect(() => {
+    const filtredListTransactions = filterListByMonth(
+      transactions,
+      currentMonth
+    );
+    setTransactionsFiltred(filtredListTransactions);
+  }, [transactions, currentMonth]);
 
   useEffect(() => {
     getAllTransactions();
